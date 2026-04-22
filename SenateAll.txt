@@ -1,0 +1,2 @@
+TotalSeats;CurrentGop;CurrentDem;HoldoverGop;HoldoverDem;GopSeats;DemSeats;OthersSeats;RemainingSeats;GopDiff;DemDiff;StatesWonByGOP;StatesWonByDem;StatesWonByOthers;StateTied;RunningStates;Timestamp
+30;50;48;29;34;18;15;2;2;-3;1;AL,AR,FL,IA,ID,IN,KS,KY,MO,NC,ND,OH,OK,SC,SD,UT,WI;AZ,CA,CO,CT,GA,HI,IL,MD,NH,NV,NY,OR,PA,VT,WA;;;AK,LA;12/8/2022 1:09:29 AM

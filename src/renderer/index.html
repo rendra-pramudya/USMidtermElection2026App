@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';" />
+  <title>US Midterm 2026 — Election Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div id="tooltip" class="tooltip hidden"></div>
+
+  <header class="header">
+    <div class="brand">
+      <span class="brand-title">US Midterm 2026</span>
+      <span class="brand-sub">Election Dashboard</span>
+    </div>
+    <div class="mode-switch" id="mode-switch">
+      <span class="mode-label" id="mode-label-auto">AUTO</span>
+      <label class="switch-pill" title="Toggle Auto / Manual mode">
+        <input type="checkbox" id="mode-toggle" />
+        <span class="switch-thumb"></span>
+      </label>
+      <span class="mode-label dim" id="mode-label-manual">MANUAL</span>
+    </div>
+    <div class="header-right">
+      <div class="conn-indicator">
+        <span class="conn-dot" id="conn-dot"></span>
+        <span class="conn-text" id="conn-text">connecting…</span>
+      </div>
+      <button class="btn-push" id="push-btn">Push to Viz</button>
+    </div>
+  </header>
+
+  <div class="manual-banner hidden" id="manual-banner">
+    <span>✎&nbsp; Manual Mode — edits push to Viz Engine immediately</span>
+    <button class="btn-clear-overrides" id="clear-overrides-btn">Clear All Overrides</button>
+  </div>
+
+  <div class="workspace">
+
+    <!-- ── Left: US Map ────────────────────────────────────── -->
+    <div class="map-panel">
+      <div id="map-container" class="map-container">
+        <div class="loading-text">Loading map…</div>
+      </div>
+      <div class="map-legend">
+        <span class="legend-item"><span class="legend-swatch gop"></span>Republican</span>
+        <span class="legend-item"><span class="legend-swatch dem"></span>Democrat</span>
+        <span class="legend-item"><span class="legend-swatch tied"></span>Tied</span>
+        <span class="legend-item"><span class="legend-swatch running"></span>Running / No race</span>
+      </div>
+    </div>
+
+    <!-- ── Right: Tabbed Data ──────────────────────────────── -->
+    <div class="data-panel">
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="governor">Governor</button>
+        <button class="tab-btn" data-tab="house">House</button>
+        <button class="tab-btn" data-tab="senate">Senate</button>
+      </nav>
+
+      <div class="tab-content" id="content-governor">
+        <div class="loading-text" style="padding:32px">Loading data…</div>
+      </div>
+      <div class="tab-content hidden" id="content-house"></div>
+      <div class="tab-content hidden" id="content-senate"></div>
+    </div>
+
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

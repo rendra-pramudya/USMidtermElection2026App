@@ -1,0 +1,36 @@
+StateCode;TotalVotePercentage;GopCandidate;DemCandidate;OthCandidate;OthCandidateParty;GopVotePercentage;DemVotePercentage;OthVotePercentage;GopVoteCount;DemVoteCount;OthVoteCount;StateWonByGOP;StateWonByDem;StateWonByOthers;Timestamp
+AK;80.10;Mike Dunleavy;Les Gara;Bill Walker;NP;52.01;23.07;20.1;111897;49596;43203;;;;11/10/2022 11:06:55 PM
+AL;98.00;Kay Ivey;Yolanda Flowers;James Blake;Lib;67.38;29.36;3.27;944850;411690;45827;AL;;;11/14/2022 1:14:24 AM
+AR;99.00;Sarah Huckabee Sanders;Chris Jones;Ricky Harrington;Lib;63.06;35.1;1.84;568846;316607;16608;AR;;;11/14/2022 5:24:39 PM
+AZ;93.19;Kari Lake;Katie Hobbs; ;;49.49;50.51;0;1188737;1213456;0;;;;11/15/2022 2:00:21 AM
+CA;64.83;Brian Dahle;Gavin Newsom; ;;41.72;58.28;0;3020812;4219687;0;;CA;;11/14/2022 4:26:03 AM
+CO;98.00;Heidi Ganahl;Jared Polis;Kevin Ruskusky;Lib;39.57;58.16;1.14;959093;1409677;27613;;CO;;11/15/2022 1:22:53 AM
+CT;95.00;Robert Stefanowski;Ned Lamont;Robert Hotaling;IP;43.05;55.98;0.97;545104;708883;12302;;CT;;11/14/2022 11:02:14 PM
+FL;99.00;Ron DeSantis;Charlie Crist;Carmen Gimenez;NPA;59.38;39.97;0.41;4613783;3105469;31571;FL;;;11/15/2022 12:58:16 AM
+HI;99.00;Duke Aiona;Josh Green; ;;36.79;63.21;0;151258;259901;0;;HI;;11/11/2022 6:33:27 AM
+IA;99.00;Kim Reynolds;Deidre DeJear;Rick Stewart;Lib;58.09;39.54;2.38;708858;482455;28983;IA;;;11/15/2022 1:14:01 AM
+ID;99.00;Brad Little;Stephen Heidt;Ammon Bundy;Ind;60.52;20.28;17.19;358585;120158;101837;ID;;;11/13/2022 8:34:33 AM
+IL;96.63;Darren Bailey;JB Pritzker;Scott Schluter;Lib;43.15;54.06;2.78;1714860;2148296;110639;;IL;;11/15/2022 1:59:05 AM
+KS;99.00;Derek Schmidt;Laura Kelly;Dennis Pyle;Ind;47.42;49.47;2.01;470463;490804;19977;;KS;;11/15/2022 2:02:30 AM
+MA;99.00;Geoff Diehl;Maura Healey;Kevin Reed;Lib;34.89;63.52;1.58;847704;1543163;38451;;MA;;11/15/2022 2:01:16 AM
+MD;92.59;Dan Cox;Wes Moore;David Lashar;Lib;34.73;62.19;1.49;597275;1069729;25694;;MD;;11/14/2022 6:17:07 PM
+ME;99.00;Paul LePage;Janet Mills;Sam Hunkler;Ind;42.54;55.45;2.02;286436;373360;13578;;ME;;11/14/2022 9:34:16 PM
+MI;99.00;Tudor Dixon;Gretchen Whitmer;Mary Buzuma;Lib;43.94;54.47;0.87;1958311;2427985;38860;;MI;;11/15/2022 12:29:02 AM
+MN;99.00;Scott Jensen;Tim Walz;James McCaskel;LMN;44.62;52.29;1.17;1119911;1312311;29435;;MN;;11/15/2022 1:19:34 AM
+NE;99.00;Jim Pillen;Carol Blood;Scott Zimmerman;Lib;59.92;36.12;3.96;394843;238037;26092;NE;;;11/14/2022 7:28:27 PM
+NH;99.00;Chris Sununu;Tom Sherman;Kelly Halldorson;Lib;57.09;41.64;0.82;351702;256506;5030;NH;;;11/14/2022 8:34:06 PM
+NM;98.00;Mark Ronchetti;Michelle Lujan Grisham;Karen Bedonie;Lib;45.63;51.93;2.44;324003;368792;17328;;NM;;11/15/2022 12:19:15 AM
+NV;98.17;Joe Lombardo;Steve Sisolak;Brandon Davis;Lib;48.87;47.26;1.45;488601;472475;14485;NV;;;11/14/2022 11:16:11 PM
+NY;95.68;Lee Zeldin;Kathy Hochul; ;;47.14;52.86;0;2699113;3026148;0;;NY;;11/15/2022 1:42:12 AM
+OH;99.00;Mike DeWine;Nan Whaley; ;;62.79;37.21;0;2528018;1497966;0;OH;;;11/12/2022 10:58:26 AM
+OK;99.00;Kevin Stitt;Joy Hofmeister;Natalie Bruno;Lib;55.45;41.78;1.41;638910;481396;16218;OK;;;11/12/2022 1:06:55 AM
+OR;92.01;Christine Drazan;Tina Kotek;Betsy Johnson;NPA;43.6;47.01;8.65;769253;829590;152686;;OR;;11/15/2022 1:57:13 AM
+PA;98.30;Douglas Mastriano;Josh Shapiro;Matt Hackenburg;Lib;41.91;56.29;0.96;2227087;2991201;51122;;PA;;11/15/2022 1:26:01 AM
+RI;99.00;Ashley Kalus;Daniel McKee;Zachary Hurwitz;Ind;39;58.07;1.26;138652;206478;4494;;RI;;11/14/2022 8:43:11 PM
+SC;99.00;Henry McMaster;Joe Cunningham;Bruce Reeves;Lib;58.08;40.7;1.22;988501;692691;20826;SC;;;11/14/2022 11:46:16 PM
+SD;99.00;Kristi Noem;Jamie Smith;Tracey Quint;Lib;61.98;35.17;2.85;217008;123132;9981;SD;;;11/13/2022 6:47:01 AM
+TN;99.00;Bill Lee;Jason Martin;John Gentry;Ind;64.93;32.93;0.88;1128097;572153;15344;TN;;;11/14/2022 10:52:28 PM
+TX;99.00;Greg Abbott;Beto O'Rourke;Mark Tippetts;Lib;54.81;43.82;1.01;4426655;3539152;81660;TX;;;11/14/2022 11:22:38 PM
+VT;99.00;Phil Scott;Brenda Siegel;Kevin Hoyt;Ind;71.29;24.09;2.13;201113;67946;6007;VT;;;11/14/2022 9:35:13 PM
+WI;99.00;Tim Michels;Tony Evers;Joan Ellis Beglinger;Ind;47.79;51.2;1.02;1268204;1358664;26987;;WI;;11/14/2022 11:28:33 PM
+WY;99.00;Mark Gordon;Theresa Livingston;Jared Baldes;Lib;78.72;16.81;4.47;143676;30676;8154;WY;;;11/12/2022 2:19:59 AM
