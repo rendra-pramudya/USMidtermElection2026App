@@ -1,0 +1,2 @@
+TotalSeats;CurrentGop;CurrentDem;GopSeats;DemSeats;OthersSeats;RemainingSeats;GopDiff;DemDiff;StatesWonByGOP;StatesWonByDem;StatesWonByOthers;StateTied;RunningStates;Timestamp
+435;212;220;208;203;0;24;-4;-17;AL,AR,FL,GA,IA,ID,IN,KS,KY,MO,MS,MT,ND,NE,OH,OK,SC,SD,TN,TX,UT,WI,WV,WY;CA,CT,DE,HI,IL,MA,MD,MI,NH,NJ,NM,NV,NY,PA,RI,VA,VT,WA;;MN,NC;AK,AZ,CO,LA,ME,OR;11/15/2022 2:03:51 AM

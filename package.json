@@ -1,0 +1,29 @@
+{
+  "name": "us-midterm-election-2026-app",
+  "version": "0.1.0",
+  "description": "Dashboard + Vizrt Shared Memory push service for US Midterm Election 2026",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "web": "node src/server/server.js",
+    "push": "node src/shared/pushService.js",
+    "mock-viz": "node src/test/mockVizEngine.js",
+    "test": "node --test src/test/parser.test.js src/test/vizshm.test.js"
+  },
+  "keywords": [
+    "election",
+    "vizrt",
+    "shared-memory",
+    "broadcast",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "electron": "^30.0.0"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0"
+  }
+}

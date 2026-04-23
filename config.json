@@ -1,0 +1,26 @@
+{
+  "vizEngine": {
+    "host": "127.0.0.1",
+    "port": 6100,
+    "reconnectIntervalMs": 3000,
+    "commandTimeoutMs": 5000
+  },
+  "dataSource": {
+    "mode": "file",
+    "fileDir": ".",
+    "files": {
+      "governorAll": "GovernorAll.txt",
+      "governorByState": "GovernorByState.txt",
+      "houseAll": "HouseAll.txt",
+      "houseByState": "HouseByState.txt",
+      "senateAll": "SenateAll.txt"
+    },
+    "watchDebounceMs": 500
+  },
+  "shm": {
+    "keyPrefix": "ELECTION2026",
+    "pushOnlyChanged": true,
+    "logCommands": true,
+    "pushMode": "files"
+  }
+}
