@@ -92,6 +92,13 @@ window.api = {
   fieldEdits:     (overrides) => _post('/api/field-edits',     overrides),
   clearOverrides: ()          => _post('/api/clear-overrides', {}),
 
+  // ── Simulation control (editor only) ─────────────────────────────────────
+  simStatus: ()        => _get('/api/sim/status'),
+  simStart:  ()        => _post('/api/sim/start',  {}),
+  simStop:   ()        => _post('/api/sim/stop',   {}),
+  simReset:  ()        => _post('/api/sim/reset',  {}),
+  simSpeed:  (speed)   => _post('/api/sim/speed',  { speed }),
+
   // ── Stubs for Electron-only methods not used in web mode ─────────────────
   getConfig:     () => Promise.resolve({}),
   getEvents:     () => Promise.resolve([]),

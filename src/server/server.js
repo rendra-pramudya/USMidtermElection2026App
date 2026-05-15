@@ -29,7 +29,8 @@ const fs     = require('fs');
 const path   = require('path');
 const crypto = require('crypto');
 
-const { PushService, loadConfig } = require('../shared/pushService');
+const { PushService, loadConfig }     = require('../shared/pushService');
+const { SimulationService }           = require('../shared/simulationService');
 
 const PORT       = parseInt(process.env.PORT || '3000', 10);
 const ROOT       = path.resolve(__dirname, '..', '..');
@@ -58,6 +59,15 @@ pushService.on('push', (p) => {
 
 pushService.start();
 console.log('[srv]  Vizrt push service started');
+
+// ── Start simulation service ──────────────────────────────────────────────────
+const simService = new SimulationService(cfg.dataSource);
+simService.on('status', (s) => {
+  if (s.running !== undefined) {
+    const state = s.running ? 'running' : 'stopped';
+    console.log(`[sim]  ${state}  gov:${s.governor.called}/${s.governor.total}  senate:${s.senate.called}/${s.senate.total}  house:${s.house.called}/${s.house.total}`);
+  }
+});
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 // sessions: token → { username, role }
@@ -267,6 +277,47 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // ── Simulation: status (any logged-in user) ───────────────────────────────
+  if (url === '/api/sim/status' && method === 'GET') {
+    if (!requireLogin(req, res)) return;
+    sendJson(res, simService.getStatus());
+    return;
+  }
+
+  // ── Simulation: control (editor only) ────────────────────────────────────
+  if (url === '/api/sim/start' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
+    simService.start();
+    sendJson(res, { ok: true, status: simService.getStatus() });
+    return;
+  }
+
+  if (url === '/api/sim/stop' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
+    simService.stop();
+    sendJson(res, { ok: true, status: simService.getStatus() });
+    return;
+  }
+
+  if (url === '/api/sim/reset' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
+    simService.reset();
+    sendJson(res, { ok: true, status: simService.getStatus() });
+    return;
+  }
+
+  if (url === '/api/sim/speed' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
+    try {
+      const { speed } = JSON.parse(await readBody(req));
+      simService.setSpeed(speed);
+      sendJson(res, { ok: true, status: simService.getStatus() });
+    } catch (e) {
+      sendJson(res, { ok: false, error: String(e.message) }, 400);
+    }
+    return;
+  }
+
   // ── Static files (no auth required — login overlay is inline) ────────────
   const filePath = STATIC[url];
   if (filePath) {
@@ -308,5 +359,5 @@ server.on('error', (e) => {
   process.exit(1);
 });
 
-process.on('SIGINT',  () => { pushService.stop(); process.exit(0); });
-process.on('SIGTERM', () => { pushService.stop(); process.exit(0); });
+process.on('SIGINT',  () => { simService.stop(); pushService.stop(); process.exit(0); });
+process.on('SIGTERM', () => { simService.stop(); pushService.stop(); process.exit(0); });

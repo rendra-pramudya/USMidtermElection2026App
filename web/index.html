@@ -73,6 +73,99 @@
     body.role-viewer .btn-push         { display: none !important; }
     body.role-viewer .manual-banner    { display: none !important; }
     body.role-viewer [data-edit]       { display: none !important; }
+    body.role-viewer .btn-sim          { display: none !important; }
+    body.role-viewer #sim-panel        { display: none !important; }
+
+    /* ── Sim button ──────────────────────────────────────────────────────── */
+    .btn-sim {
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-2); border-radius: 5px; font-size: 12px;
+      padding: 5px 12px; cursor: pointer; transition: background 0.15s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .btn-sim:hover  { background: var(--border); color: var(--text); }
+    .btn-sim.active { border-color: rgba(168,85,247,0.5); color: #a855f7; }
+
+    /* ── Sim panel ───────────────────────────────────────────────────────── */
+    #sim-panel {
+      position: fixed; bottom: 20px; right: 20px; z-index: 500;
+      width: 280px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: none; flex-direction: column; gap: 12px;
+    }
+    #sim-panel.open { display: flex; }
+    .sim-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sim-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .sim-close {
+      background: none; border: none; color: var(--text-3); cursor: pointer;
+      font-size: 16px; line-height: 1; padding: 2px;
+    }
+    .sim-close:hover { color: var(--text); }
+
+    .sim-status {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text-2);
+    }
+    .sim-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--text-3); flex-shrink: 0;
+    }
+    .sim-dot.running {
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34,197,94,0.6);
+      animation: simPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes simPulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+
+    .sim-races { display: flex; flex-direction: column; gap: 7px; }
+    .sim-race  { display: flex; flex-direction: column; gap: 3px; }
+    .sim-race-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text-2);
+    }
+    .sim-bar-track {
+      height: 5px; background: var(--surface-2);
+      border-radius: 3px; overflow: hidden;
+    }
+    .sim-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: #a855f7;
+      transition: width 0.4s ease;
+    }
+    .sim-bar-fill.done { background: #22c55e; }
+
+    .sim-speed { display: flex; flex-direction: column; gap: 6px; }
+    .sim-speed-label { font-size: 11px; color: var(--text-2); }
+    .sim-speed-btns  { display: flex; gap: 5px; }
+    .sim-speed-btn {
+      flex: 1; background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-2); border-radius: 4px; font-size: 11px;
+      padding: 4px 0; cursor: pointer; transition: background 0.15s;
+    }
+    .sim-speed-btn:hover  { background: var(--border); color: var(--text); }
+    .sim-speed-btn.active { border-color: #a855f7; color: #a855f7; background: rgba(168,85,247,0.1); }
+
+    .sim-actions { display: flex; gap: 8px; }
+    .sim-btn {
+      flex: 1; padding: 7px; border-radius: 5px; font-size: 12px;
+      font-weight: 600; cursor: pointer; border: 1px solid transparent;
+      transition: opacity 0.15s;
+    }
+    .sim-btn:active { transform: scale(0.97); }
+    .sim-btn.primary {
+      background: #a855f7; color: #fff; border-color: #a855f7;
+    }
+    .sim-btn.primary:hover { opacity: 0.85; }
+    .sim-btn.secondary {
+      background: var(--surface-2); border-color: var(--border); color: var(--text-2);
+    }
+    .sim-btn.secondary:hover { background: var(--border); color: var(--text); }
   </style>
 </head>
 <body>
@@ -116,6 +209,7 @@
         <span class="conn-text" id="conn-text">connecting…</span>
       </div>
       <button class="btn-push" id="push-btn">Push to Viz</button>
+      <button class="btn-sim" id="sim-btn">⚡ Simulation</button>
       <!-- User badge (shown after login) -->
       <div class="user-badge hidden" id="user-badge">
         <span id="user-name"></span>
@@ -160,6 +254,57 @@
       <div class="tab-content hidden" id="content-senate"></div>
     </div>
 
+  </div>
+
+  <!-- ── Simulation panel ──────────────────────────────────────────────── -->
+  <div id="sim-panel">
+    <div class="sim-header">
+      <span class="sim-title">⚡ Simulation</span>
+      <button class="sim-close" id="sim-close">✕</button>
+    </div>
+    <div class="sim-status">
+      <span class="sim-dot" id="sim-dot"></span>
+      <span id="sim-state-text">Not started</span>
+    </div>
+    <div class="sim-races">
+      <div class="sim-race">
+        <div class="sim-race-label">
+          <span>Governor</span><span id="sim-gov-count">0 / 0</span>
+        </div>
+        <div class="sim-bar-track">
+          <div class="sim-bar-fill" id="sim-gov-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="sim-race">
+        <div class="sim-race-label">
+          <span>Senate</span><span id="sim-sen-count">0 / 0</span>
+        </div>
+        <div class="sim-bar-track">
+          <div class="sim-bar-fill" id="sim-sen-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="sim-race">
+        <div class="sim-race-label">
+          <span>House</span><span id="sim-house-count">0 / 0</span>
+        </div>
+        <div class="sim-bar-track">
+          <div class="sim-bar-fill" id="sim-house-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sim-speed">
+      <span class="sim-speed-label">Speed</span>
+      <div class="sim-speed-btns">
+        <button class="sim-speed-btn" data-speed="0.5">½×</button>
+        <button class="sim-speed-btn active" data-speed="1">1×</button>
+        <button class="sim-speed-btn" data-speed="2">2×</button>
+        <button class="sim-speed-btn" data-speed="5">5×</button>
+      </div>
+    </div>
+    <div class="sim-actions">
+      <button class="sim-btn primary" id="sim-toggle-btn">▶ Start</button>
+      <button class="sim-btn secondary" id="sim-reset-btn">↺ Reset</button>
+    </div>
   </div>
 
   <script src="/api-adapter.js"></script>
@@ -226,6 +371,105 @@
       document.getElementById('login-pass').value = '';
       document.getElementById('login-user').focus();
     });
+
+    // ── Simulation panel logic ────────────────────────────────────────────────
+    const simPanel     = document.getElementById('sim-panel');
+    const simBtn       = document.getElementById('sim-btn');
+    const simClose     = document.getElementById('sim-close');
+    const simDot       = document.getElementById('sim-dot');
+    const simStateText = document.getElementById('sim-state-text');
+    const simToggleBtn = document.getElementById('sim-toggle-btn');
+    const simResetBtn  = document.getElementById('sim-reset-btn');
+    let simPollId      = null;
+
+    simBtn.addEventListener('click', () => {
+      const open = simPanel.classList.toggle('open');
+      simBtn.classList.toggle('active', open);
+      if (open) startSimPoll();
+      else       stopSimPoll();
+    });
+    simClose.addEventListener('click', () => {
+      simPanel.classList.remove('open');
+      simBtn.classList.remove('active');
+      stopSimPoll();
+    });
+
+    simToggleBtn.addEventListener('click', async () => {
+      try {
+        const isRunning = simToggleBtn.dataset.running === 'true';
+        const data = await (isRunning ? window.api.simStop() : window.api.simStart());
+        updateSimUI(data.status);
+      } catch {}
+    });
+
+    simResetBtn.addEventListener('click', async () => {
+      try {
+        const data = await window.api.simReset();
+        updateSimUI(data.status);
+      } catch {}
+    });
+
+    document.querySelectorAll('.sim-speed-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const speed = +btn.dataset.speed;
+        try {
+          const data = await window.api.simSpeed(speed);
+          updateSimUI(data.status);
+        } catch {}
+        document.querySelectorAll('.sim-speed-btn').forEach(b =>
+          b.classList.toggle('active', +b.dataset.speed === speed));
+      });
+    });
+
+    function updateSimUI(s) {
+      if (!s) return;
+      const running = s.running;
+      const done    = s.initialized && !running &&
+        s.governor.called === s.governor.total &&
+        s.senate.called === s.senate.total &&
+        s.house.called === s.house.total;
+
+      simDot.className = 'sim-dot' + (running ? ' running' : '');
+      simStateText.textContent = running ? `Running (${s.speed}×)`
+                                : done   ? 'Completed'
+                                : s.initialized ? 'Paused' : 'Not started';
+      simToggleBtn.textContent    = running ? '⏹ Stop' : '▶ Start';
+      simToggleBtn.dataset.running = running ? 'true' : 'false';
+
+      // Bars
+      setBar('gov',   s.governor.called, s.governor.total);
+      setBar('sen',   s.senate.called,   s.senate.total);
+      setBar('house', s.house.called,    s.house.total);
+
+      // Speed buttons
+      document.querySelectorAll('.sim-speed-btn').forEach(b =>
+        b.classList.toggle('active', +b.dataset.speed === s.speed));
+    }
+
+    function setBar(id, called, total) {
+      const count = document.getElementById(`sim-${id}-count`);
+      const bar   = document.getElementById(`sim-${id}-bar`);
+      if (!count || !bar) return;
+      count.textContent = `${called} / ${total || '—'}`;
+      const pct = total > 0 ? (called / total * 100) : 0;
+      bar.style.width = pct + '%';
+      bar.classList.toggle('done', pct >= 100);
+    }
+
+    async function pollSim() {
+      try {
+        const s = await window.api.simStatus();
+        updateSimUI(s);
+      } catch {}
+    }
+
+    function startSimPoll() {
+      pollSim();
+      if (!simPollId) simPollId = setInterval(pollSim, 1500);
+    }
+    function stopSimPoll() {
+      if (simPollId) { clearInterval(simPollId); simPollId = null; }
+    }
 
     // Resume session from sessionStorage if token is still valid
     (async () => {
