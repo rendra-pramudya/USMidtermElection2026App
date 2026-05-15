@@ -5,8 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>US Midterm 2026 — Election Dashboard</title>
   <link rel="stylesheet" href="/styles.css" />
+  <style>
+    /* ── Login overlay ───────────────────────────────────────────────────── */
+    #login-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(11,18,32,0.96);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #login-overlay.hidden { display: none; }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 36px 40px;
+      width: 340px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .login-card h2 {
+      font-size: 16px; font-weight: 700;
+      color: var(--text); text-align: center;
+    }
+    .login-card p.login-sub {
+      font-size: 12px; color: var(--text-3);
+      text-align: center; margin-top: -12px;
+    }
+    .login-field { display: flex; flex-direction: column; gap: 6px; }
+    .login-field label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.05em; }
+    .login-field input {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 5px; color: var(--text);
+      font-size: 13px; padding: 8px 10px;
+      outline: none; transition: border-color 0.15s;
+    }
+    .login-field input:focus { border-color: var(--dem); }
+    .login-error { font-size: 12px; color: var(--gop); text-align: center; min-height: 16px; }
+    .btn-login {
+      background: var(--dem); border: none; border-radius: 5px;
+      color: #fff; font-size: 13px; font-weight: 600;
+      padding: 9px; cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn-login:hover { opacity: 0.85; }
+    .btn-login:active { transform: scale(0.98); }
+    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── User badge in header ─────────────────────────────────────────────── */
+    .user-badge {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; color: var(--text-2);
+    }
+    .user-badge .role-chip {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 7px;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .user-badge .role-chip.editor { border-color: rgba(34,197,94,0.4); color: #22c55e; }
+    .user-badge .role-chip.viewer { border-color: var(--border); color: var(--text-3); }
+    .btn-logout {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-2); border-radius: 5px; font-size: 11px;
+      padding: 3px 10px; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-logout:hover { background: var(--surface-2); color: var(--text); }
+
+    /* ── Viewer mode: hide edit controls ─────────────────────────────────── */
+    body.role-viewer .mode-switch      { display: none !important; }
+    body.role-viewer .btn-push         { display: none !important; }
+    body.role-viewer .manual-banner    { display: none !important; }
+    body.role-viewer [data-edit]       { display: none !important; }
+  </style>
 </head>
 <body>
+
+  <!-- ── Login overlay ──────────────────────────────────────────────────── -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <h2>US Midterm 2026</h2>
+      <p class="login-sub">Election Dashboard — Sign in to continue</p>
+      <div class="login-field">
+        <label for="login-user">Username</label>
+        <input type="text" id="login-user" autocomplete="username" autofocus />
+      </div>
+      <div class="login-field">
+        <label for="login-pass">Password</label>
+        <input type="password" id="login-pass" autocomplete="current-password" />
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button class="btn-login" id="login-btn">Sign in</button>
+    </div>
+  </div>
 
   <div id="tooltip" class="tooltip hidden"></div>
 
@@ -29,6 +116,12 @@
         <span class="conn-text" id="conn-text">connecting…</span>
       </div>
       <button class="btn-push" id="push-btn">Push to Viz</button>
+      <!-- User badge (shown after login) -->
+      <div class="user-badge hidden" id="user-badge">
+        <span id="user-name"></span>
+        <span class="role-chip" id="role-chip"></span>
+        <button class="btn-logout" id="logout-btn">Sign out</button>
+      </div>
     </div>
   </header>
 
@@ -69,11 +162,82 @@
 
   </div>
 
-  <!--
-    Load the fetch-based API adapter FIRST so window.api is defined
-    before renderer.js runs. renderer.js is identical to the Electron version.
-  -->
   <script src="/api-adapter.js"></script>
+  <script>
+    // ── Login logic ──────────────────────────────────────────────────────────
+    const overlay   = document.getElementById('login-overlay');
+    const loginBtn  = document.getElementById('login-btn');
+    const loginErr  = document.getElementById('login-error');
+    const userBadge = document.getElementById('user-badge');
+    const userName  = document.getElementById('user-name');
+    const roleChip  = document.getElementById('role-chip');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    function applyRole(role) {
+      document.body.classList.remove('role-viewer', 'role-editor');
+      document.body.classList.add(`role-${role}`);
+    }
+
+    function showApp(username, role) {
+      overlay.classList.add('hidden');
+      userName.textContent = username;
+      roleChip.textContent = role;
+      roleChip.className   = `role-chip ${role}`;
+      userBadge.classList.remove('hidden');
+      applyRole(role);
+    }
+
+    async function doLogin() {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      if (!user || !pass) { loginErr.textContent = 'Please enter username and password.'; return; }
+      loginBtn.disabled  = true;
+      loginBtn.textContent = 'Signing in…';
+      loginErr.textContent = '';
+      try {
+        const data = await window.api.login(user, pass);
+        if (data.ok) {
+          showApp(data.username, data.role);
+        } else {
+          loginErr.textContent = data.error || 'Login failed.';
+        }
+      } catch (e) {
+        loginErr.textContent = 'Connection error. Please try again.';
+      } finally {
+        loginBtn.disabled    = false;
+        loginBtn.textContent = 'Sign in';
+      }
+    }
+
+    loginBtn.addEventListener('click', doLogin);
+    document.getElementById('login-pass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('login-user').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('login-pass').focus();
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await window.api.logout();
+      userBadge.classList.add('hidden');
+      document.body.classList.remove('role-viewer', 'role-editor');
+      overlay.classList.remove('hidden');
+      document.getElementById('login-user').value = '';
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-user').focus();
+    });
+
+    // Resume session from sessionStorage if token is still valid
+    (async () => {
+      if (window.api.isLoggedIn()) {
+        try {
+          const me = await window.api.me();
+          if (me.loggedIn) { showApp(me.username, me.role); return; }
+        } catch {}
+      }
+      overlay.classList.remove('hidden');
+    })();
+  </script>
   <script src="/renderer.js"></script>
 </body>
 </html>

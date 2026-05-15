@@ -3,31 +3,39 @@
 /**
  * US Midterm 2026 — Combined Web Server + Vizrt Push Service
  *
- * Serves the election dashboard on http://localhost:3000 while
+ * Serves the election dashboard on http://0.0.0.0:3000 while
  * simultaneously running the Vizrt SHM push service.
  *
  * Routes:
- *   GET  /                    → web/index.html
- *   GET  /api-adapter.js      → web/api-adapter.js
- *   GET  /renderer.js         → src/renderer/renderer.js  (shared with Electron)
- *   GET  /styles.css          → src/renderer/styles.css   (shared with Electron)
- *   GET  /us.svg              → us.svg (project root)
- *   GET  /api/election-data   → parsed election JSON
- *   GET  /api/stats           → Viz Engine connection stats
- *   POST /api/push-now        → trigger manual push
+ *   POST /api/login            → authenticate, returns session token
+ *   POST /api/logout           → invalidate session token
+ *   GET  /api/me               → current user info
+ *   GET  /                     → web/index.html
+ *   GET  /api-adapter.js       → web/api-adapter.js
+ *   GET  /renderer.js          → src/renderer/renderer.js  (shared with Electron)
+ *   GET  /styles.css           → src/renderer/styles.css   (shared with Electron)
+ *   GET  /us.svg               → us.svg (project root)
+ *   GET  /api/election-data    → parsed election JSON          [requires login]
+ *   GET  /api/stats            → Viz Engine connection stats   [requires login]
+ *   POST /api/push-now         → trigger manual push           [requires editor]
+ *   POST /api/field-edit       → apply single override + push  [requires editor]
+ *   POST /api/field-edits      → batch overrides + push        [requires editor]
+ *   POST /api/clear-overrides  → clear overrides + push        [requires editor]
+ *   GET  /api/get-overrides    → list current overrides        [requires login]
  */
 
 const http   = require('http');
 const fs     = require('fs');
 const path   = require('path');
+const crypto = require('crypto');
 
 const { PushService, loadConfig } = require('../shared/pushService');
-const { loadAll }                 = require('../shared/parser');
 
-const PORT     = parseInt(process.env.PORT || '3000', 10);
-const ROOT     = path.resolve(__dirname, '..', '..');
-const WEB_DIR  = path.join(ROOT, 'web');
-const RND_DIR  = path.join(ROOT, 'src', 'renderer');
+const PORT       = parseInt(process.env.PORT || '3000', 10);
+const ROOT       = path.resolve(__dirname, '..', '..');
+const WEB_DIR    = path.join(ROOT, 'web');
+const RND_DIR    = path.join(ROOT, 'src', 'renderer');
+const USERS_FILE = path.join(ROOT, 'users.json');
 
 // ── Start Vizrt push service ──────────────────────────────────────────────────
 const cfg         = loadConfig();
@@ -41,8 +49,8 @@ pushService.on('status', (s) => {
 
 pushService.on('push', (p) => {
   if (!p.skipped) {
-    const ok  = p.pushed  ?? 0;
-    const tot = p.total   ?? 0;
+    const ok   = p.pushed  ?? 0;
+    const tot  = p.total   ?? 0;
     const fail = p.failed  ? ` (${p.failed} failed)` : '';
     console.log(`[push] ${ok}/${tot} keys${fail} — ${p.reason}`);
   }
@@ -50,6 +58,43 @@ pushService.on('push', (p) => {
 
 pushService.start();
 console.log('[srv]  Vizrt push service started');
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+// sessions: token → { username, role }
+const sessions = new Map();
+
+function loadUsers() {
+  try {
+    return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')).users || [];
+  } catch {
+    return [];
+  }
+}
+
+function tokenFromReq(req) {
+  const auth = req.headers['authorization'] || '';
+  return auth.startsWith('Bearer ') ? auth.slice(7) : null;
+}
+
+function getSession(req) {
+  const token = tokenFromReq(req);
+  return token ? (sessions.get(token) || null) : null;
+}
+
+// Returns session or sends 401 and returns null.
+function requireLogin(req, res) {
+  const session = getSession(req);
+  if (!session) { sendJson(res, { error: 'Unauthorized' }, 401); return null; }
+  return session;
+}
+
+// Returns session or sends 401/403 and returns null.
+function requireEditor(req, res) {
+  const session = requireLogin(req, res);
+  if (!session) return null;
+  if (session.role !== 'editor') { sendJson(res, { error: 'Forbidden' }, 403); return null; }
+  return session;
+}
 
 // ── MIME map ──────────────────────────────────────────────────────────────────
 const MIME = {
@@ -87,16 +132,13 @@ function readBody(req) {
 }
 
 // ── Static route map ──────────────────────────────────────────────────────────
-// Web-specific files
 const STATIC = {
-  '/':              path.join(WEB_DIR, 'index.html'),
-  '/index.html':    path.join(WEB_DIR, 'index.html'),
-  '/api-adapter.js':path.join(WEB_DIR, 'api-adapter.js'),
-  // Shared with Electron renderer (zero duplication)
-  '/renderer.js':   path.join(RND_DIR, 'renderer.js'),
-  '/styles.css':    path.join(RND_DIR, 'styles.css'),
-  // Project root assets
-  '/us.svg':        path.join(ROOT, 'us.svg'),
+  '/':               path.join(WEB_DIR, 'index.html'),
+  '/index.html':     path.join(WEB_DIR, 'index.html'),
+  '/api-adapter.js': path.join(WEB_DIR, 'api-adapter.js'),
+  '/renderer.js':    path.join(RND_DIR, 'renderer.js'),
+  '/styles.css':     path.join(RND_DIR, 'styles.css'),
+  '/us.svg':         path.join(ROOT, 'us.svg'),
 };
 
 // ── HTTP server ───────────────────────────────────────────────────────────────
@@ -104,8 +146,52 @@ const server = http.createServer(async (req, res) => {
   const url    = req.url.split('?')[0];
   const method = req.method.toUpperCase();
 
-  // ── API: election data (always returns overrides merged with file data) ────
+  // ── Auth: login ──────────────────────────────────────────────────────────
+  if (url === '/api/login' && method === 'POST') {
+    try {
+      const { username, password } = JSON.parse(await readBody(req));
+      const users = loadUsers();
+      const user  = users.find(u => u.username === username && u.password === password);
+      if (!user) {
+        sendJson(res, { ok: false, error: 'Invalid username or password' }, 401);
+        return;
+      }
+      const token = crypto.randomBytes(32).toString('hex');
+      sessions.set(token, { username: user.username, role: user.role });
+      console.log(`[auth] login: ${user.username} (${user.role})`);
+      sendJson(res, { ok: true, token, role: user.role, username: user.username });
+    } catch (e) {
+      sendJson(res, { ok: false, error: String(e.message) }, 400);
+    }
+    return;
+  }
+
+  // ── Auth: logout ─────────────────────────────────────────────────────────
+  if (url === '/api/logout' && method === 'POST') {
+    const token = tokenFromReq(req);
+    if (token && sessions.has(token)) {
+      const s = sessions.get(token);
+      console.log(`[auth] logout: ${s.username}`);
+      sessions.delete(token);
+    }
+    sendJson(res, { ok: true });
+    return;
+  }
+
+  // ── Auth: current user ───────────────────────────────────────────────────
+  if (url === '/api/me' && method === 'GET') {
+    const session = getSession(req);
+    if (!session) {
+      sendJson(res, { loggedIn: false }, 401);
+    } else {
+      sendJson(res, { loggedIn: true, username: session.username, role: session.role });
+    }
+    return;
+  }
+
+  // ── API: election data ────────────────────────────────────────────────────
   if (url === '/api/election-data' && method === 'GET') {
+    if (!requireLogin(req, res)) return;
     try {
       sendJson(res, pushService.getDataWithOverrides());
     } catch (e) {
@@ -116,12 +202,14 @@ const server = http.createServer(async (req, res) => {
 
   // ── API: Viz Engine stats ─────────────────────────────────────────────────
   if (url === '/api/stats' && method === 'GET') {
+    if (!requireLogin(req, res)) return;
     sendJson(res, pushService.getStats());
     return;
   }
 
   // ── API: manual push ──────────────────────────────────────────────────────
   if (url === '/api/push-now' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
     try {
       const result = await pushService.pushNow('web-ui');
       sendJson(res, { ok: true, result: result ?? null });
@@ -131,8 +219,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── API: single field edit — apply override + push ────────────────────────
+  // ── API: single field edit ────────────────────────────────────────────────
   if (url === '/api/field-edit' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
     try {
       const override = JSON.parse(await readBody(req));
       pushService.applyOverride(override);
@@ -144,8 +233,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── API: batch field edits — apply multiple overrides, push once ──────────
+  // ── API: batch field edits ────────────────────────────────────────────────
   if (url === '/api/field-edits' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
     try {
       const overrides = JSON.parse(await readBody(req));
       for (const o of overrides) pushService.applyOverride(o);
@@ -157,12 +247,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── API: clear all overrides + push clean file data ───────────────────────
+  // ── API: clear all overrides ──────────────────────────────────────────────
   if (url === '/api/clear-overrides' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
     try {
       pushService.clearOverrides();
-      // forceFields=true so per-field keys are pushed even when pushMode='files',
-      // ensuring any previously overridden Viz keys are reset to file values.
       const result = await pushService.pushNow('clear-overrides', true);
       sendJson(res, { ok: true, result: result ?? null });
     } catch (e) {
@@ -173,11 +262,12 @@ const server = http.createServer(async (req, res) => {
 
   // ── API: list current overrides ───────────────────────────────────────────
   if (url === '/api/get-overrides' && method === 'GET') {
+    if (!requireLogin(req, res)) return;
     sendJson(res, pushService.getOverrides());
     return;
   }
 
-  // ── Static files ──────────────────────────────────────────────────────────
+  // ── Static files (no auth required — login overlay is inline) ────────────
   const filePath = STATIC[url];
   if (filePath) {
     serveFile(res, filePath);
@@ -188,12 +278,24 @@ const server = http.createServer(async (req, res) => {
   res.end('404 Not Found');
 });
 
-server.listen(PORT, '127.0.0.1', () => {
+server.listen(PORT, '0.0.0.0', () => {
+  const { networkInterfaces } = require('os');
+  const nets = networkInterfaces();
+  const localIPs = Object.values(nets).flat()
+    .filter(n => n.family === 'IPv4' && !n.internal)
+    .map(n => n.address);
+
   console.log(`\n  ┌─────────────────────────────────────────────┐`);
   console.log(`  │  US Midterm 2026 — Election Dashboard        │`);
   console.log(`  │  http://localhost:${PORT}                      │`);
+  for (const ip of localIPs) {
+    const padded = `http://${ip}:${PORT}`.padEnd(45);
+    console.log(`  │  ${padded}│`);
+  }
   console.log(`  │  Ctrl+C to stop                              │`);
   console.log(`  └─────────────────────────────────────────────┘\n`);
+  console.log(`  Default accounts:  admin / admin123  (editor)`);
+  console.log(`                     viewer / viewer123 (viewer)\n`);
 });
 
 server.on('error', (e) => {
@@ -206,6 +308,5 @@ server.on('error', (e) => {
   process.exit(1);
 });
 
-// Graceful shutdown
 process.on('SIGINT',  () => { pushService.stop(); process.exit(0); });
 process.on('SIGTERM', () => { pushService.stop(); process.exit(0); });
