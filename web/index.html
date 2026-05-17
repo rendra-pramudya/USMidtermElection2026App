@@ -75,52 +75,29 @@
     body.role-viewer [data-edit]       { display: none !important; }
     body.role-viewer .btn-sim          { display: none !important; }
     body.role-viewer #sim-panel        { display: none !important; }
-    body.role-viewer .btn-settings     { display: none !important; }
+    body.role-viewer .tab-settings     { display: none !important; }
 
-    /* ── Settings button ─────────────────────────────────────────────────── */
-    .btn-settings {
+    /* ── Settings tab panel ──────────────────────────────────────────────── */
+    .settings-page {
+      padding: 24px; display: flex; flex-direction: column; gap: 24px;
+    }
+    .settings-group {
       background: var(--surface-2); border: 1px solid var(--border);
-      color: var(--text-2); border-radius: 5px; font-size: 12px;
-      padding: 5px 11px; cursor: pointer; transition: background 0.15s;
-      display: flex; align-items: center; gap: 5px;
+      border-radius: 10px; overflow: hidden;
     }
-    .btn-settings:hover  { background: var(--border); color: var(--text); }
-    .btn-settings.active { border-color: rgba(251,191,36,0.5); color: #fbbf24; }
-
-    /* ── Settings modal ──────────────────────────────────────────────────── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 600;
-      background: rgba(0,0,0,0.55); backdrop-filter: blur(2px);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .modal-box {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; width: 420px; max-width: 95vw;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      display: flex; flex-direction: column;
-    }
-    .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px 12px; border-bottom: 1px solid var(--border);
-    }
-    .modal-title { font-size: 14px; font-weight: 700; color: var(--text); }
-    .modal-close {
-      background: none; border: none; color: var(--text-3);
-      cursor: pointer; font-size: 17px; line-height: 1; padding: 3px;
-    }
-    .modal-close:hover { color: var(--text); }
-    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-
-    .settings-section { display: flex; flex-direction: column; gap: 14px; }
-    .settings-section-title {
+    .settings-group-title {
       font-size: 11px; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--text-3);
-      margin: 0;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
     }
+    .settings-group-body {
+      padding: 16px; display: flex; flex-direction: column; gap: 14px;
+    }
+
     .settings-conn {
       display: flex; align-items: center; gap: 8px;
       font-size: 12px; color: var(--text-2);
-      padding: 8px 12px; background: var(--surface-2);
+      padding: 8px 12px; background: var(--surface);
       border-radius: 6px; border: 1px solid var(--border);
     }
 
@@ -292,7 +269,6 @@
       </div>
       <button class="btn-push" id="push-btn">Push to Viz</button>
       <button class="btn-sim" id="sim-btn">⚡ Simulation</button>
-      <button class="btn-settings" id="settings-btn">⚙ Settings</button>
       <!-- User badge (shown after login) -->
       <div class="user-badge hidden" id="user-badge">
         <span id="user-name"></span>
@@ -328,6 +304,7 @@
         <button class="tab-btn active" data-tab="governor">Governor</button>
         <button class="tab-btn" data-tab="house">House</button>
         <button class="tab-btn" data-tab="senate">Senate</button>
+        <button class="tab-btn tab-settings" data-tab="settings">⚙ Settings</button>
       </nav>
 
       <div class="tab-content" id="content-governor">
@@ -335,51 +312,51 @@
       </div>
       <div class="tab-content hidden" id="content-house"></div>
       <div class="tab-content hidden" id="content-senate"></div>
-    </div>
 
-  </div>
+      <!-- Settings tab panel -->
+      <div class="tab-content hidden" id="content-settings">
+        <div class="settings-page">
 
-  <!-- ── Settings modal ───────────────────────────────────────────────── -->
-  <div id="settings-modal" class="modal-overlay" style="display:none">
-    <div class="modal-box">
-      <div class="modal-header">
-        <span class="modal-title">⚙ Settings</span>
-        <button class="modal-close" id="settings-close">✕</button>
-      </div>
-      <div class="modal-body">
+          <div class="settings-group">
+            <div class="settings-group-title">Viz Engine Target</div>
+            <div class="settings-group-body">
+              <div class="settings-conn">
+                <span class="conn-dot" id="settings-conn-dot"></span>
+                <span id="settings-conn-text">Loading…</span>
+              </div>
+              <div class="settings-form">
+                <div class="settings-row">
+                  <label for="viz-host">Host</label>
+                  <input id="viz-host" type="text" placeholder="127.0.0.1"
+                         autocomplete="off" spellcheck="false" />
+                </div>
+                <div class="settings-row">
+                  <label for="viz-port">Port</label>
+                  <input id="viz-port" type="number" min="1" max="65535" placeholder="6100" />
+                </div>
+                <div class="settings-row">
+                  <label for="viz-reconnect">Reconnect (ms)</label>
+                  <input id="viz-reconnect" type="number" min="500" max="30000"
+                         step="500" placeholder="3000" />
+                </div>
+                <div class="settings-row">
+                  <label for="viz-timeout">Cmd Timeout (ms)</label>
+                  <input id="viz-timeout" type="number" min="1000" max="30000"
+                         step="1000" placeholder="5000" />
+                </div>
+              </div>
+              <div class="settings-footer">
+                <button class="settings-save-btn" id="settings-save">Save &amp; Reconnect</button>
+                <span class="settings-feedback" id="settings-feedback"></span>
+              </div>
+            </div>
+          </div>
 
-        <div class="settings-section">
-          <h3 class="settings-section-title">Viz Engine Target</h3>
-          <div class="settings-conn">
-            <span class="conn-dot" id="settings-conn-dot"></span>
-            <span id="settings-conn-text">Loading…</span>
-          </div>
-          <div class="settings-form">
-            <div class="settings-row">
-              <label for="viz-host">Host</label>
-              <input id="viz-host" type="text" placeholder="127.0.0.1" autocomplete="off" spellcheck="false" />
-            </div>
-            <div class="settings-row">
-              <label for="viz-port">Port</label>
-              <input id="viz-port" type="number" min="1" max="65535" placeholder="6100" />
-            </div>
-            <div class="settings-row">
-              <label for="viz-reconnect">Reconnect (ms)</label>
-              <input id="viz-reconnect" type="number" min="500" max="30000" step="500" placeholder="3000" />
-            </div>
-            <div class="settings-row">
-              <label for="viz-timeout">Cmd Timeout (ms)</label>
-              <input id="viz-timeout" type="number" min="1000" max="30000" step="1000" placeholder="5000" />
-            </div>
-          </div>
-          <div class="settings-footer">
-            <button class="settings-save-btn" id="settings-save">Save &amp; Reconnect</button>
-            <span class="settings-feedback" id="settings-feedback"></span>
-          </div>
         </div>
-
       </div>
+
     </div>
+
   </div>
 
   <!-- ── Simulation panel ──────────────────────────────────────────────── -->
@@ -498,10 +475,7 @@
       document.getElementById('login-user').focus();
     });
 
-    // ── Settings modal logic ──────────────────────────────────────────────────
-    const settingsModal   = document.getElementById('settings-modal');
-    const settingsBtn     = document.getElementById('settings-btn');
-    const settingsClose   = document.getElementById('settings-close');
+    // ── Settings tab logic ────────────────────────────────────────────────────
     const settingsConnDot = document.getElementById('settings-conn-dot');
     const settingsConnTxt = document.getElementById('settings-conn-text');
     const settingsSave    = document.getElementById('settings-save');
@@ -511,9 +485,7 @@
     const vizReconnectEl  = document.getElementById('viz-reconnect');
     const vizTimeoutEl    = document.getElementById('viz-timeout');
 
-    async function openSettings() {
-      settingsModal.style.display = 'flex';
-      settingsBtn.classList.add('active');
+    async function loadVizSettings() {
       settingsFb.textContent = '';
       settingsFb.className   = 'settings-feedback';
       settingsSave.disabled  = false;
@@ -524,26 +496,18 @@
         vizReconnectEl.value = s.reconnectIntervalMs || '';
         vizTimeoutEl.value   = s.commandTimeoutMs    || '';
         const ok = !!s.connected;
-        settingsConnDot.className  = 'conn-dot ' + (ok ? 'ok' : 'bad');
+        settingsConnDot.className   = 'conn-dot ' + (ok ? 'ok' : 'bad');
         settingsConnTxt.textContent = ok
           ? `Connected — ${s.host}:${s.port}`
           : `Disconnected — ${s.host}:${s.port}`;
       } catch {
-        settingsConnDot.className  = 'conn-dot bad';
+        settingsConnDot.className   = 'conn-dot bad';
         settingsConnTxt.textContent = 'Could not load settings';
       }
     }
 
-    function closeSettings() {
-      settingsModal.style.display = 'none';
-      settingsBtn.classList.remove('active');
-    }
-
-    settingsBtn.addEventListener('click', openSettings);
-    settingsClose.addEventListener('click', closeSettings);
-    settingsModal.addEventListener('click', (e) => {
-      if (e.target === settingsModal) closeSettings();
-    });
+    // Load settings whenever the Settings tab is activated
+    document.querySelector('[data-tab="settings"]').addEventListener('click', loadVizSettings);
 
     settingsSave.addEventListener('click', async () => {
       const host = vizHostEl.value.trim();
@@ -570,14 +534,13 @@
         if (res.ok) {
           settingsFb.textContent = `Saved — reconnecting to ${res.settings.host}:${res.settings.port}…`;
           settingsFb.className   = 'settings-feedback ok';
-          settingsConnDot.className  = 'conn-dot bad';
+          settingsConnDot.className   = 'conn-dot bad';
           settingsConnTxt.textContent = `Reconnecting to ${res.settings.host}:${res.settings.port}…`;
-          // Refresh connection status after 3 s
           setTimeout(async () => {
             try {
               const s2 = await window.api.getVizSettings();
               const ok = !!s2.connected;
-              settingsConnDot.className  = 'conn-dot ' + (ok ? 'ok' : 'bad');
+              settingsConnDot.className   = 'conn-dot ' + (ok ? 'ok' : 'bad');
               settingsConnTxt.textContent = ok
                 ? `Connected — ${s2.host}:${s2.port}`
                 : `Disconnected — ${s2.host}:${s2.port}`;
