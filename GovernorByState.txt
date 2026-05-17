@@ -1,36 +1,36 @@
 StateCode;TotalVotePercentage;GopCandidate;DemCandidate;OthCandidate;OthCandidateParty;GopVotePercentage;DemVotePercentage;OthVotePercentage;GopVoteCount;DemVoteCount;OthVoteCount;StateWonByGOP;StateWonByDem;StateWonByOthers;Timestamp
-AK;80.10;Mike Dunleavy;Les Gara;Bill Walker;NP;52.01;23.07;20.1;111897;49596;43203;;;;11/10/2022 11:06:55 PM
-AL;98.00;Kay Ivey;Yolanda Flowers;James Blake;Lib;67.38;29.36;3.27;944850;411690;45827;AL;;;11/14/2022 1:14:24 AM
-AR;99.00;Sarah Huckabee Sanders;Chris Jones;Ricky Harrington;Lib;63.06;35.1;1.84;568846;316607;16608;AR;;;11/14/2022 5:24:39 PM
-AZ;93.19;Kari Lake;Katie Hobbs; ;;49.49;50.51;0;1188737;1213456;0;;;;11/15/2022 2:00:21 AM
-CA;64.83;Brian Dahle;Gavin Newsom; ;;41.72;58.28;0;3020812;4219687;0;;CA;;11/14/2022 4:26:03 AM
-CO;98.00;Heidi Ganahl;Jared Polis;Kevin Ruskusky;Lib;39.57;58.16;1.14;959093;1409677;27613;;CO;;11/15/2022 1:22:53 AM
-CT;95.00;Robert Stefanowski;Ned Lamont;Robert Hotaling;IP;43.05;55.98;0.97;545104;708883;12302;;CT;;11/14/2022 11:02:14 PM
-FL;99.00;Ron DeSantis;Charlie Crist;Carmen Gimenez;NPA;59.38;39.97;0.41;4613783;3105469;31571;FL;;;11/15/2022 12:58:16 AM
-HI;99.00;Duke Aiona;Josh Green; ;;36.79;63.21;0;151258;259901;0;;HI;;11/11/2022 6:33:27 AM
-IA;99.00;Kim Reynolds;Deidre DeJear;Rick Stewart;Lib;58.09;39.54;2.38;708858;482455;28983;IA;;;11/15/2022 1:14:01 AM
-ID;99.00;Brad Little;Stephen Heidt;Ammon Bundy;Ind;60.52;20.28;17.19;358585;120158;101837;ID;;;11/13/2022 8:34:33 AM
-IL;96.63;Darren Bailey;JB Pritzker;Scott Schluter;Lib;43.15;54.06;2.78;1714860;2148296;110639;;IL;;11/15/2022 1:59:05 AM
-KS;99.00;Derek Schmidt;Laura Kelly;Dennis Pyle;Ind;47.42;49.47;2.01;470463;490804;19977;;KS;;11/15/2022 2:02:30 AM
-MA;99.00;Geoff Diehl;Maura Healey;Kevin Reed;Lib;34.89;63.52;1.58;847704;1543163;38451;;MA;;11/15/2022 2:01:16 AM
-MD;92.59;Dan Cox;Wes Moore;David Lashar;Lib;34.73;62.19;1.49;597275;1069729;25694;;MD;;11/14/2022 6:17:07 PM
-ME;99.00;Paul LePage;Janet Mills;Sam Hunkler;Ind;42.54;55.45;2.02;286436;373360;13578;;ME;;11/14/2022 9:34:16 PM
-MI;99.00;Tudor Dixon;Gretchen Whitmer;Mary Buzuma;Lib;43.94;54.47;0.87;1958311;2427985;38860;;MI;;11/15/2022 12:29:02 AM
-MN;99.00;Scott Jensen;Tim Walz;James McCaskel;LMN;44.62;52.29;1.17;1119911;1312311;29435;;MN;;11/15/2022 1:19:34 AM
-NE;99.00;Jim Pillen;Carol Blood;Scott Zimmerman;Lib;59.92;36.12;3.96;394843;238037;26092;NE;;;11/14/2022 7:28:27 PM
-NH;99.00;Chris Sununu;Tom Sherman;Kelly Halldorson;Lib;57.09;41.64;0.82;351702;256506;5030;NH;;;11/14/2022 8:34:06 PM
-NM;98.00;Mark Ronchetti;Michelle Lujan Grisham;Karen Bedonie;Lib;45.63;51.93;2.44;324003;368792;17328;;NM;;11/15/2022 12:19:15 AM
-NV;98.17;Joe Lombardo;Steve Sisolak;Brandon Davis;Lib;48.87;47.26;1.45;488601;472475;14485;NV;;;11/14/2022 11:16:11 PM
-NY;95.68;Lee Zeldin;Kathy Hochul; ;;47.14;52.86;0;2699113;3026148;0;;NY;;11/15/2022 1:42:12 AM
-OH;99.00;Mike DeWine;Nan Whaley; ;;62.79;37.21;0;2528018;1497966;0;OH;;;11/12/2022 10:58:26 AM
-OK;99.00;Kevin Stitt;Joy Hofmeister;Natalie Bruno;Lib;55.45;41.78;1.41;638910;481396;16218;OK;;;11/12/2022 1:06:55 AM
-OR;92.01;Christine Drazan;Tina Kotek;Betsy Johnson;NPA;43.6;47.01;8.65;769253;829590;152686;;OR;;11/15/2022 1:57:13 AM
-PA;98.30;Douglas Mastriano;Josh Shapiro;Matt Hackenburg;Lib;41.91;56.29;0.96;2227087;2991201;51122;;PA;;11/15/2022 1:26:01 AM
-RI;99.00;Ashley Kalus;Daniel McKee;Zachary Hurwitz;Ind;39;58.07;1.26;138652;206478;4494;;RI;;11/14/2022 8:43:11 PM
-SC;99.00;Henry McMaster;Joe Cunningham;Bruce Reeves;Lib;58.08;40.7;1.22;988501;692691;20826;SC;;;11/14/2022 11:46:16 PM
-SD;99.00;Kristi Noem;Jamie Smith;Tracey Quint;Lib;61.98;35.17;2.85;217008;123132;9981;SD;;;11/13/2022 6:47:01 AM
-TN;99.00;Bill Lee;Jason Martin;John Gentry;Ind;64.93;32.93;0.88;1128097;572153;15344;TN;;;11/14/2022 10:52:28 PM
-TX;99.00;Greg Abbott;Beto O'Rourke;Mark Tippetts;Lib;54.81;43.82;1.01;4426655;3539152;81660;TX;;;11/14/2022 11:22:38 PM
-VT;99.00;Phil Scott;Brenda Siegel;Kevin Hoyt;Ind;71.29;24.09;2.13;201113;67946;6007;VT;;;11/14/2022 9:35:13 PM
-WI;99.00;Tim Michels;Tony Evers;Joan Ellis Beglinger;Ind;47.79;51.2;1.02;1268204;1358664;26987;;WI;;11/14/2022 11:28:33 PM
-WY;99.00;Mark Gordon;Theresa Livingston;Jared Baldes;Lib;78.72;16.81;4.47;143676;30676;8154;WY;;;11/12/2022 2:19:59 AM
+AK;77;Mike Dunleavy;Les Gara;Bill Walker;NP;43;54.3;2.7;50831;64189;3192;;AK;;5/17/2026, 2:30:40 AM
+AL;77;Kay Ivey;Yolanda Flowers;James Blake;Lib;52.1;45.8;2.1;523206;459940;21089;AL;;;5/17/2026, 2:30:40 AM
+AR;61;Sarah Huckabee Sanders;Chris Jones;Ricky Harrington;Lib;38.7;58.1;3.2;170360;255759;14087;;AR;;5/17/2026, 2:30:40 AM
+AZ;90;Kari Lake;Katie Hobbs;;;51.5;48.5;0;623513;587192;0;AZ;;;5/17/2026, 2:30:40 AM
+CA;75;Brian Dahle;Gavin Newsom;;;45.5;54.5;0;1951948;2338048;0;;CA;;5/17/2026, 2:30:40 AM
+CO;63;Heidi Ganahl;Jared Polis;Kevin Ruskusky;Lib;57.2;38;4.8;656306;436007;55075;CO;;;5/17/2026, 2:30:40 AM
+CT;75;Robert Stefanowski;Ned Lamont;Robert Hotaling;IP;42.5;53.7;3.8;290613;367199;25984;;CT;;5/17/2026, 2:30:40 AM
+FL;96;Ron DeSantis;Charlie Crist;Carmen Gimenez;NPA;50;45.5;4.5;2269441;2065191;204250;FL;;;5/17/2026, 2:30:40 AM
+HI;75;Duke Aiona;Josh Green;;;45.2;54.8;0;100356;121670;0;;HI;;5/17/2026, 2:30:40 AM
+IA;64;Kim Reynolds;Deidre DeJear;Rick Stewart;Lib;42.7;55.3;2;300134;388698;14058;;IA;;5/17/2026, 2:30:40 AM
+ID;73;Brad Little;Stephen Heidt;Ammon Bundy;Ind;46.1;52.3;1.6;189521;215010;6578;;ID;;5/17/2026, 2:30:40 AM
+IL;58;Darren Bailey;JB Pritzker;Scott Schluter;Lib;40.1;57.6;2.3;720896;1035501;41348;;IL;;5/17/2026, 2:30:40 AM
+KS;77;Derek Schmidt;Laura Kelly;Dennis Pyle;Ind;44.8;52.6;2.6;209864;246402;12180;;KS;;5/17/2026, 2:30:40 AM
+MA;90;Geoff Diehl;Maura Healey;Kevin Reed;Lib;46.2;50.4;3.4;929302;1013784;68390;;MA;;5/17/2026, 2:30:40 AM
+MD;72;Dan Cox;Wes Moore;David Lashar;Lib;45.5;52.4;2.1;399260;459808;18427;;MD;;5/17/2026, 2:30:40 AM
+ME;61;Paul LePage;Janet Mills;Sam Hunkler;Ind;54.8;42.4;2.8;198084;153262;10121;ME;;;5/17/2026, 2:30:40 AM
+MI;56;Tudor Dixon;Gretchen Whitmer;Mary Buzuma;Lib;57.9;40.4;1.7;1061761;740849;31174;MI;;;5/17/2026, 2:30:40 AM
+MN;58;Scott Jensen;Tim Walz;James McCaskel;LMN;42.1;54.8;3.1;348631;453799;25671;;MN;;5/17/2026, 2:30:40 AM
+NE;72;Jim Pillen;Carol Blood;Scott Zimmerman;Lib;52;44.6;3.4;224515;192564;14680;NE;;;5/17/2026, 2:30:40 AM
+NH;96;Chris Sununu;Tom Sherman;Kelly Halldorson;Lib;46.4;52.4;1.2;172091;194344;4451;;NH;;5/17/2026, 2:30:40 AM
+NM;55;Mark Ronchetti;Michelle Lujan Grisham;Karen Bedonie;Lib;40.7;55.8;3.5;127169;174349;10936;;NM;;5/17/2026, 2:30:40 AM
+NV;75;Joe Lombardo;Steve Sisolak;Brandon Davis;Lib;45.8;52.3;1.9;201063;229599;8341;;NV;;5/17/2026, 2:30:40 AM
+NY;89;Lee Zeldin;Kathy Hochul;;;48.1;51.9;0;1372519;1480951;0;;NY;;5/17/2026, 2:30:40 AM
+OH;94;Mike DeWine;Nan Whaley;;;48.6;51.4;0;1048361;1108761;0;;OH;;5/17/2026, 2:30:40 AM
+OK;94;Kevin Stitt;Joy Hofmeister;Natalie Bruno;Lib;51.5;45.6;2.9;423647;375113;23856;OK;;;5/17/2026, 2:30:40 AM
+OR;55;Christine Drazan;Tina Kotek;Betsy Johnson;NPA;42.6;55;2.4;307788;397378;17340;;OR;;5/17/2026, 2:30:40 AM
+PA;72;Douglas Mastriano;Josh Shapiro;Matt Hackenburg;Lib;54.4;44.4;1.2;1486024;1212858;32780;PA;;;5/17/2026, 2:30:40 AM
+RI;59;Ashley Kalus;Daniel McKee;Zachary Hurwitz;Ind;56.2;41.9;1.9;67238;50130;2273;RI;;;5/17/2026, 2:30:40 AM
+SC;90;Henry McMaster;Joe Cunningham;Bruce Reeves;Lib;50.4;48;1.6;440060;419105;13970;SC;;;5/17/2026, 2:30:40 AM
+SD;63;Kristi Noem;Jamie Smith;Tracey Quint;Lib;39;58.7;2.3;50755;76392;2993;;SD;;5/17/2026, 2:30:40 AM
+TN;55;Bill Lee;Jason Martin;John Gentry;Ind;42.7;55.8;1.5;322326;421212;11323;;TN;;5/17/2026, 2:30:40 AM
+TX;91;Greg Abbott;Beto O'Rourke;Mark Tippetts;Lib;45;50.3;4.7;1845446;2062797;192747;;TX;;5/17/2026, 2:30:40 AM
+VT;94;Phil Scott;Brenda Siegel;Kevin Hoyt;Ind;51.2;46;2.8;119145;107044;6516;VT;;;5/17/2026, 2:30:40 AM
+WI;74;Tim Michels;Tony Evers;Joan Ellis Beglinger;Ind;44.6;52.6;2.8;534286;630121;33543;;WI;;5/17/2026, 2:30:40 AM
+WY;60;Mark Gordon;Theresa Livingston;Jared Baldes;Lib;39.1;56.5;4.4;23549;34028;2650;;WY;;5/17/2026, 2:30:40 AM

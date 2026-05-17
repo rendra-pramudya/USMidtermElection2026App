@@ -1,2 +1,2 @@
 TotalSeats;CurrentGop;CurrentDem;HoldoverGop;HoldoverDem;GopSeats;DemSeats;OthersSeats;RemainingSeats;GopDiff;DemDiff;StatesWonByGOP;StatesWonByDem;StatesWonByOthers;RunningStates;Timestamp
-36;28;22;8;6;16;17;0;-6;-4;1;AL,AR,FL,IA,ID,NH,NV,OH,SC,SD,VT;CA,CO,CT,HI,IL,KS,MD,NY,OR,PA,WI;;AK,AZ,GA,MA,ME,MI,MN,NE,NM,OK,RI,TN,TX,WY;11/15/2022 2:02:30 AM
+35;12;23;0;0;12;23;0;0;;;AL,AZ,CO,FL,ME,MI,NE,OK,PA,RI,SC,VT;AK,AR,CA,CT,HI,IA,ID,IL,KS,MA,MD,MN,NH,NM,NV,NY,OH,OR,SD,TN,TX,WI,WY;;;5/17/2026, 2:30:40 AM
