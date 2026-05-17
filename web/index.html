@@ -75,7 +75,10 @@
     body.role-viewer [data-edit]       { display: none !important; }
     body.role-viewer .btn-sim          { display: none !important; }
     body.role-viewer #sim-panel        { display: none !important; }
-    body.role-viewer .tab-settings     { display: none !important; }
+
+    /* Settings tab: hidden until an editor logs in */
+    .tab-settings                      { display: none !important; }
+    body.role-editor .tab-settings     { display: inline-block !important; }
 
     /* ── Settings tab panel ──────────────────────────────────────────────── */
     .settings-page {
