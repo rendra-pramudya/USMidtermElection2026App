@@ -92,6 +92,10 @@ window.api = {
   fieldEdits:     (overrides) => _post('/api/field-edits',     overrides),
   clearOverrides: ()          => _post('/api/clear-overrides', {}),
 
+  // ── Settings (editor only) ────────────────────────────────────────────────
+  getVizSettings:  ()         => _get('/api/settings/viz'),
+  saveVizSettings: (settings) => _post('/api/settings/viz', settings),
+
   // ── Simulation control (editor only) ─────────────────────────────────────
   simStatus: ()        => _get('/api/sim/status'),
   simStart:  ()        => _post('/api/sim/start',  {}),

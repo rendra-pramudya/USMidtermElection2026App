@@ -22,6 +22,8 @@
  *   POST /api/field-edits      → batch overrides + push        [requires editor]
  *   POST /api/clear-overrides  → clear overrides + push        [requires editor]
  *   GET  /api/get-overrides    → list current overrides        [requires login]
+ *   GET  /api/settings/viz    → get Viz Engine config          [requires editor]
+ *   POST /api/settings/viz    → update Viz Engine + reconnect  [requires editor]
  */
 
 const http   = require('http');
@@ -32,11 +34,12 @@ const crypto = require('crypto');
 const { PushService, loadConfig }     = require('../shared/pushService');
 const { SimulationService }           = require('../shared/simulationService');
 
-const PORT       = parseInt(process.env.PORT || '3000', 10);
-const ROOT       = path.resolve(__dirname, '..', '..');
-const WEB_DIR    = path.join(ROOT, 'web');
-const RND_DIR    = path.join(ROOT, 'src', 'renderer');
-const USERS_FILE = path.join(ROOT, 'users.json');
+const PORT        = parseInt(process.env.PORT || '3000', 10);
+const ROOT        = path.resolve(__dirname, '..', '..');
+const WEB_DIR     = path.join(ROOT, 'web');
+const RND_DIR     = path.join(ROOT, 'src', 'renderer');
+const USERS_FILE  = path.join(ROOT, 'users.json');
+const CONFIG_FILE = path.join(ROOT, 'config.json');
 
 // ── Start Vizrt push service ──────────────────────────────────────────────────
 const cfg         = loadConfig();
@@ -274,6 +277,45 @@ const server = http.createServer(async (req, res) => {
   if (url === '/api/get-overrides' && method === 'GET') {
     if (!requireLogin(req, res)) return;
     sendJson(res, pushService.getOverrides());
+    return;
+  }
+
+  // ── Settings: Viz Engine config ───────────────────────────────────────────
+  if (url === '/api/settings/viz' && method === 'GET') {
+    if (!requireEditor(req, res)) return;
+    sendJson(res, { ...pushService.getVizConfig(), connected: pushService.getStats().connected });
+    return;
+  }
+
+  if (url === '/api/settings/viz' && method === 'POST') {
+    if (!requireEditor(req, res)) return;
+    try {
+      const body = JSON.parse(await readBody(req));
+      const host = String(body.host || '').trim();
+      const port = parseInt(body.port, 10);
+      if (!host)                    throw new Error('host is required');
+      if (isNaN(port) || port < 1 || port > 65535) throw new Error('port must be 1–65535');
+
+      const update = {
+        host,
+        port,
+        reconnectIntervalMs: parseInt(body.reconnectIntervalMs, 10) || cfg.vizEngine.reconnectIntervalMs,
+        commandTimeoutMs:    parseInt(body.commandTimeoutMs,    10) || cfg.vizEngine.commandTimeoutMs,
+      };
+
+      // Reconnect the live client
+      pushService.reconnectViz(update);
+
+      // Persist to config.json so the setting survives restarts
+      const rawCfg = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+      rawCfg.vizEngine = { ...rawCfg.vizEngine, ...update };
+      fs.writeFileSync(CONFIG_FILE, JSON.stringify(rawCfg, null, 2) + '\n');
+
+      console.log(`[settings] Viz Engine → ${update.host}:${update.port}`);
+      sendJson(res, { ok: true, settings: pushService.getVizConfig() });
+    } catch (e) {
+      sendJson(res, { ok: false, error: String(e.message) }, 400);
+    }
     return;
   }
 

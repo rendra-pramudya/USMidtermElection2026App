@@ -259,6 +259,37 @@ class PushService extends EventEmitter {
   getOverrides() {
     return this._overrides ? [...this._overrides] : [];
   }
+
+  /**
+   * Switch the Viz Engine target at runtime without restarting the process.
+   * Closes the current TCP connection, builds a fresh VizShmClient with the
+   * new host/port, wires its events, and reconnects.
+   * @param {{ host?: string, port?: number, reconnectIntervalMs?: number, commandTimeoutMs?: number }} vizConfig
+   */
+  reconnectViz(vizConfig) {
+    Object.assign(this.config.vizEngine, vizConfig);
+    this.client.close();
+    this.client = new VizShmClient({
+      host:               this.config.vizEngine.host,
+      port:               this.config.vizEngine.port,
+      reconnectIntervalMs: this.config.vizEngine.reconnectIntervalMs,
+      commandTimeoutMs:   this.config.vizEngine.commandTimeoutMs,
+      logCommands:        this.config.shm.logCommands,
+    });
+    this._stats.connected = false;
+    this._wireClient();
+    this.client.connect();
+  }
+
+  /** Return the active Viz Engine connection settings. */
+  getVizConfig() {
+    return {
+      host:               this.config.vizEngine.host,
+      port:               this.config.vizEngine.port,
+      reconnectIntervalMs: this.config.vizEngine.reconnectIntervalMs,
+      commandTimeoutMs:   this.config.vizEngine.commandTimeoutMs,
+    };
+  }
 }
 
 // CLI entry point: `npm run push`
